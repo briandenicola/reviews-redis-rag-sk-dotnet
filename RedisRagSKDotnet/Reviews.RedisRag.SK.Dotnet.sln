@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35617.110 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reviews.RedisRag.SK.Dotnet", "Reviews.RedisRag.SK.Dotnet.csproj", "{88C37AE5-B39C-4761-8553-7003488AAE1C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{88C37AE5-B39C-4761-8553-7003488AAE1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88C37AE5-B39C-4761-8553-7003488AAE1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88C37AE5-B39C-4761-8553-7003488AAE1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88C37AE5-B39C-4761-8553-7003488AAE1C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BA0C48E2-2C67-4257-88A7-1A03384871F2}
+	EndGlobalSection
+EndGlobal

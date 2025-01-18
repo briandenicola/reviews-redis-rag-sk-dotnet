@@ -1,0 +1,39 @@
+graph TD
+    A[User] -->|Interacts with| B[Console Application]
+    B -->|Uses| C[Service Provider]
+    C -->|Provides| D[CsvFileReaderService]
+    C -->|Provides| E[DataLoaderService]
+    C -->|Provides| F[SearchService]
+    C -->|Provides| G[AzureOpenAIConfiguration]
+    C -->|Provides| H[RedisConfiguration]
+
+    E -->|Depends on| D
+    E -->|Depends on| K[TextEmbeddingGenerationService]
+    E -->|Depends on| J[RedisDBService]
+
+    F -->|Depends on| K[TextEmbeddingGenerationService]
+    F -->|Depends on| J[RedisDBService]
+    F -->|Depends on| M[ChatCompletionService]
+
+    J -->|Interacts with| N[Redis Database]
+    K -->|Interacts with| O[Azure OpenAI]
+    M -->|Interacts with| O[Azure OpenAI]
+
+    subgraph Services
+        D
+        E
+        F
+        J
+        K
+        M
+    end
+
+    subgraph Configurations
+        G
+        H
+    end
+
+    subgraph External Dependencies
+        N
+        O
+    end
