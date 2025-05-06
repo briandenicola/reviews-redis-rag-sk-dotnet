@@ -1,0 +1,64 @@
+version: "3"
+
+vars:
+  TITLE: Redis RAG Demo
+  DEFAULT_REGION: eastus2
+  COMPLETION_NAME: gpt-4o-mini
+  COMPLETION_VERSION: 2024-07-18
+  EMBEDDING_NAME: text-embedding-ada-002
+  EMBEDDING_VERSION: 2
+
+tasks:  
+  default:
+    cmds:
+      - task --list
+
+  up:
+    desc: Creates an Azure environment for {{.TITLE}}
+    cmds:
+      - terraform -chdir=./infrastructure workspace new {{.REGION}} || true
+      - terraform -chdir=./infrastructure workspace select {{.REGION}}
+      - terraform -chdir=./infrastructure init
+      - task: apply
+    vars:
+      REGION: "{{default .DEFAULT_REGION .CLI_ARGS}}"
+
+  apply:
+    desc: Applies Terraform configuration for {{.TITLE}}
+    cmds:
+      - terraform -chdir=./infrastructure apply -auto-approve  -compact-warnings
+        -var "region={{.REGION}}"
+        -var "tags={{.TITLE}}"
+        -var "completions_model={ \"deployment_name\"=\"{{.COMPLETION_NAME}}\",\"name\"=\"{{.COMPLETION_NAME}}\",\"version\"=\"{{.COMPLETION_VERSION}}\", \"sku_type\"=\"GlobalStandard\" }"
+        -var "embedding_model={ \"deployment_name\"=\"{{.EMBEDDING_NAME}}\",\"name\"=\"{{.EMBEDDING_NAME}}\",\"version\"=\"{{.EMBEDDING_VERSION}}\", \"sku_type\"=\"GlobalStandard\" }"
+    vars:
+      REGION: "{{default .DEFAULT_REGION .CLI_ARGS}}"
+
+  run:
+    desc: Starts the console app
+    dir: ./RedisRagSKDotnet
+    cmds:
+    - dotnet user-secrets set "AzureOpenAI:Endpoint" "{{.OPENAI_ENDPOINT}}" 
+    - dotnet user-secrets set "AzureOpenAI:Key" "{{.OPENAI_KEY}}" 
+    - dotnet user-secrets set "AzureOpenAI:EmbeddingDeployment" "{{.EMBEDDING_NAME}}" 
+    - dotnet user-secrets set "AzureOpenAI:CompletionsDeployment" "{{.COMPLETION_NAME}}"
+    - dotnet user-secrets set "Redis:Host" "{{.REDIS_ENDPOINT}}" 
+    - dotnet user-secrets set "Redis:Port" 10000 
+    - dotnet user-secrets set "Redis:Password" "{{.REDIS_KEY}}"
+    - dotnet run
+    vars:
+      OPENAI_ENDPOINT:
+        sh: terraform -chdir=../infrastructure output -raw OPENAI_ENDPOINT
+      OPENAI_KEY:
+        sh: terraform -chdir=../infrastructure output -raw OPENAI_KEY
+      REDIS_KEY:
+        sh: terraform -chdir=../infrastructure output -raw REDIS_KEY                
+      REDIS_ENDPOINT:
+        sh: terraform -chdir=../infrastructure output -raw REDIS_ENDPOINT     
+        
+  down:
+    desc: Destroys all resources and cleans up Terraform for {{.TITLE}}
+    cmds:
+      - az group list --tag Application="{{.TITLE}}" --query "[].name" -o tsv | xargs -ot -n 1 az group delete -y --no-wait -n || true
+      - cd infrastructure ;
+        rm -rf terraform.tfstate.d .terraform.lock.hcl .terraform terraform.tfstate terraform.tfstate.backup .terraform.tfstate.lock.info || true
