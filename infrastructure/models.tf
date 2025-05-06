@@ -9,7 +9,7 @@ resource "azurerm_cognitive_deployment" "embeddings" {
 
   sku {
     name     = var.embedding_model.sku_type
-    capacity = 10
+    capacity = 15
   }
 
 }
@@ -25,7 +25,6 @@ resource "azurerm_cognitive_deployment" "completions" {
 
   sku {
     name     = var.completions_model.sku_type
-    capacity = 10
+    capacity = 15
   }
-
 }

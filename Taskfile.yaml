@@ -38,13 +38,20 @@ tasks:
     desc: Starts the console app
     dir: ./RedisRagSKDotnet
     cmds:
-    - dotnet user-secrets set "AzureOpenAI:Endpoint" "{{.OPENAI_ENDPOINT}}" 
-    - dotnet user-secrets set "AzureOpenAI:Key" "{{.OPENAI_KEY}}" 
-    - dotnet user-secrets set "AzureOpenAI:EmbeddingDeployment" "{{.EMBEDDING_NAME}}" 
-    - dotnet user-secrets set "AzureOpenAI:CompletionsDeployment" "{{.COMPLETION_NAME}}"
-    - dotnet user-secrets set "Redis:Host" "{{.REDIS_ENDPOINT}}" 
-    - dotnet user-secrets set "Redis:Port" 10000 
-    - dotnet user-secrets set "Redis:Password" "{{.REDIS_KEY}}"
+    - cmd: dotnet user-secrets set "AzureOpenAI:Endpoint" "{{.OPENAI_ENDPOINT}}" 
+      silent: true
+    - cmd: dotnet user-secrets set "AzureOpenAI:Key" "{{.OPENAI_KEY}}" 
+      silent: true
+    - cmd: dotnet user-secrets set "AzureOpenAI:EmbeddingDeployment" "{{.EMBEDDING_NAME}}" 
+      silent: true
+    - cmd: dotnet user-secrets set "AzureOpenAI:CompletionsDeployment" "{{.COMPLETION_NAME}}"
+      silent: true
+    - cmd: dotnet user-secrets set "Redis:Host" "{{.REDIS_ENDPOINT}}" 
+      silent: true
+    - cmd: dotnet user-secrets set "Redis:Port" 10000 
+      silent: true
+    - cmd: dotnet user-secrets set "Redis:Password" "{{.REDIS_KEY}}"
+      silent: true
     - dotnet run
     vars:
       OPENAI_ENDPOINT:
