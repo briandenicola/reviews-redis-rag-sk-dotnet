@@ -29,8 +29,16 @@ tasks:
       - terraform -chdir=./infrastructure apply -auto-approve  -compact-warnings
         -var "region={{.REGION}}"
         -var "tags={{.TITLE}}"
-        -var "completions_model={ \"deployment_name\"=\"{{.COMPLETION_NAME}}\",\"name\"=\"{{.COMPLETION_NAME}}\",\"version\"=\"{{.COMPLETION_VERSION}}\", \"sku_type\"=\"GlobalStandard\" }"
-        -var "embedding_model={ \"deployment_name\"=\"{{.EMBEDDING_NAME}}\",\"name\"=\"{{.EMBEDDING_NAME}}\",\"version\"=\"{{.EMBEDDING_VERSION}}\", \"sku_type\"=\"GlobalStandard\" }"
+        -var 'completions_model={ 
+          "deployment_name\"=\"{{.COMPLETION_NAME}}",
+          "name"="{{.COMPLETION_NAME}}",
+          "version"="{{.COMPLETION_VERSION}}", 
+          "sku_type"="GlobalStandard" }'
+        -var 'embedding_model={ 
+          "deployment_name"="{{.EMBEDDING_NAME}}",
+          "name"="{{.EMBEDDING_NAME}}",
+          "version"="{{.EMBEDDING_VERSION}}", 
+          "sku_type"="GlobalStandard" }'
     vars:
       REGION: "{{default .DEFAULT_REGION .CLI_ARGS}}"
 
@@ -38,6 +46,15 @@ tasks:
     desc: Starts the console app
     dir: ./RedisRagSKDotnet
     cmds:
+    - task: secrets
+    - dotnet run  
+        
+  secrets:
+    desc: Add secrets to dotnet local store
+    internal: true
+    dir: ./RedisRagSKDotnet
+    run: when_changed
+    cmds: 
     - cmd: dotnet user-secrets set "AzureOpenAI:Endpoint" "{{.OPENAI_ENDPOINT}}" 
       silent: true
     - cmd: dotnet user-secrets set "AzureOpenAI:Key" "{{.OPENAI_KEY}}" 
@@ -52,7 +69,6 @@ tasks:
       silent: true
     - cmd: dotnet user-secrets set "Redis:Password" "{{.REDIS_KEY}}"
       silent: true
-    - dotnet run
     vars:
       OPENAI_ENDPOINT:
         sh: terraform -chdir=../infrastructure output -raw OPENAI_ENDPOINT
@@ -61,8 +77,8 @@ tasks:
       REDIS_KEY:
         sh: terraform -chdir=../infrastructure output -raw REDIS_KEY                
       REDIS_ENDPOINT:
-        sh: terraform -chdir=../infrastructure output -raw REDIS_ENDPOINT     
-        
+        sh: terraform -chdir=../infrastructure output -raw REDIS_ENDPOINT   
+
   down:
     desc: Destroys all resources and cleans up Terraform for {{.TITLE}}
     cmds:

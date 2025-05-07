@@ -61,10 +61,10 @@ internal class SearchService : ISearchService
     /// <param name="searchResult">The search results containing reviews.</param>
     /// <param name="userQuery">The user's search query.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the chat completion response as a string.</returns>
-    private async Task<string> GenerateChatCompletionAsync(VectorSearchResults<Review> searchResult, string userQuery)
+    private async Task<string> GenerateChatCompletionAsync(IAsyncEnumerable<VectorSearchResult<Review>> searchResult, string userQuery)
     {
         var stringBuilder = new StringBuilder();
-        await foreach (var record in searchResult.Results)
+        await foreach (var record in searchResult)
         {
             stringBuilder.AppendLine();
             stringBuilder.AppendLine($"ProductId: {record.Record.ProductId} Score: {record.Score} Text: {record.Record.Text} ");

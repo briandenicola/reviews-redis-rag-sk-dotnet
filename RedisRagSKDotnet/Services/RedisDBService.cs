@@ -51,15 +51,15 @@ internal class RedisDBService : IRedisDBService
     /// </summary>
     /// <param name="searchVector">The search vector to use for the search.</param>
     /// <returns>A task that represents the asynchronous search operation, containing the search results.</returns>
-    public async Task<VectorSearchResults<Review>> VectorizedSearchAsync(ReadOnlyMemory<float> searchVector)
+    public async Task<IAsyncEnumerable<VectorSearchResult<Review>>> VectorizedSearchAsync(ReadOnlyMemory<float> searchVector)
     {
-        var options = new VectorSearchOptions()
+        var options = new VectorSearchOptions<Review>
         {
-            VectorPropertyName = nameof(Review.Embedding),
-            Top = 3
+            VectorProperty = r => r.Embedding
         };
+
         await GetOrCreateCollectionAsync();
-        var results = await _collection.VectorizedSearchAsync(searchVector, options);
+        var results = _collection.SearchEmbeddingAsync(searchVector, top: 3, options);
         return results;
     }
 

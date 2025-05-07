@@ -89,7 +89,8 @@ internal class Program
     {
         var configuration = new ConfigurationBuilder()
                                             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                                            .AddUserSecrets<Program>();
+                                            .AddUserSecrets<Program>()
+                                            .AddEnvironmentVariables(prefix: "BJD_");
 
         var config = configuration.Build();
         return config;

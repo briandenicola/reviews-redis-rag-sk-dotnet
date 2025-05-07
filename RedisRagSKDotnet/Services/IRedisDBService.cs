@@ -26,5 +26,5 @@ internal interface IRedisDBService
     /// </summary>
     /// <param name="searchVector">The search vector to use for the search.</param>
     /// <returns>A task that represents the asynchronous search operation, containing the search results.</returns>
-    Task<VectorSearchResults<Review>> VectorizedSearchAsync(ReadOnlyMemory<float> searchVector);
+    Task<IAsyncEnumerable<VectorSearchResult<Review>>> VectorizedSearchAsync(ReadOnlyMemory<float> searchVector);
 }
